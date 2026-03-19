@@ -17,6 +17,7 @@
     min-height: 100vh;
     min-height: 100dvh;
     padding: 20px 12px;
+    overflow-x: hidden;
   }
 
   .page {
@@ -27,10 +28,79 @@
     max-width: 720px;
   }
 
+  /* ============ ANIMATIONS ============ */
+
+  /* Card entrance */
+  @keyframes cardIn {
+    0% { opacity: 0; transform: scale(0.85) translateY(40px); }
+    60% { opacity: 1; transform: scale(1.02) translateY(-4px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Fade up for staggered elements */
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Gold shimmer sweep on amount */
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* Bingo balls bounce in */
+  @keyframes ballBounce {
+    0% { opacity: 0; transform: scale(0) translateY(-30px); }
+    50% { opacity: 1; transform: scale(1.2) translateY(4px); }
+    70% { transform: scale(0.9) translateY(-2px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Sparkle twinkle */
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.6; }
+  }
+
+  /* Punch hole pop */
+  @keyframes punchPop {
+    0% { transform: translateY(-50%) scale(0); }
+    60% { transform: translateY(-50%) scale(1.15); }
+    100% { transform: translateY(-50%) scale(1); }
+  }
+
+  /* Rule line grow */
+  @keyframes ruleGrow {
+    0% { transform: scaleX(0); opacity: 0; }
+    100% { transform: scaleX(1); opacity: 1; }
+  }
+
+  /* Confetti burst */
+  @keyframes confettiFall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(calc(100vh)) rotate(720deg); opacity: 0; }
+  }
+
+  .confetti-piece {
+    position: fixed;
+    top: -10px;
+    width: 8px;
+    height: 12px;
+    border-radius: 2px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* ============ VOUCHER ============ */
+
   .voucher {
     width: 100%;
     position: relative;
     filter: drop-shadow(0 20px 50px rgba(0,50,100,0.3));
+    animation: cardIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
   }
 
   .ticket-outer {
@@ -47,12 +117,13 @@
     height: 28px;
     border-radius: 50%;
     background: linear-gradient(135deg, #e8eef5, #d0dbe8);
-    transform: translateY(-50%);
+    transform: translateY(-50%) scale(0);
     z-index: 10;
     box-shadow: inset 0 2px 6px rgba(0,40,80,0.2);
+    animation: punchPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
-  .punch-left { left: -14px; }
-  .punch-right { right: -14px; }
+  .punch-left { left: -14px; animation-delay: 0.7s; }
+  .punch-right { right: -14px; animation-delay: 0.8s; }
 
   .tear-line-left, .tear-line-right {
     position: absolute;
@@ -84,11 +155,6 @@
     pointer-events: none;
   }
 
-  @keyframes twinkle {
-    0%, 100% { opacity: 0.15; }
-    50% { opacity: 0.6; }
-  }
-
   .sparkle {
     position: absolute;
     border-radius: 50%;
@@ -106,15 +172,20 @@
 
   .waves-footer {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     height: 80px;
     opacity: 0.06;
     pointer-events: none;
   }
 
+  /* Stagger class */
+  .anim-item {
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+
   .header { text-align: center; position: relative; z-index: 2; }
+  .header.anim-item { animation-delay: 0.4s; }
 
   .sea-witch-icon { margin-bottom: 6px; display: inline-block; }
 
@@ -154,7 +225,12 @@
     margin: 14px 0;
     position: relative;
     z-index: 2;
+    transform-origin: center;
   }
+  .fancy-rule.anim-item { animation: ruleGrow 0.5s ease-out forwards; }
+  .rule-1 { animation-delay: 0.65s !important; }
+  .rule-2 { animation-delay: 2.0s !important; }
+
   .fancy-rule .line {
     flex: 1;
     height: 1px;
@@ -162,7 +238,13 @@
   }
   .fancy-rule .anchor { font-size: 12px; color: rgba(255,255,255,0.3); }
 
-  .gift-label { text-align: center; position: relative; z-index: 2; }
+  .gift-label {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .gift-label.anim-item { animation-delay: 0.8s; }
+
   .gift-label .pre {
     font-family: 'Great Vibes', cursive;
     font-size: 26px;
@@ -179,6 +261,7 @@
     text-shadow: 0 3px 20px rgba(0,100,180,0.4);
   }
 
+  /* Bingo balls */
   .balls-row {
     display: flex;
     justify-content: center;
@@ -199,14 +282,20 @@
     font-weight: 800;
     font-size: 22px;
     position: relative;
+    opacity: 0;
+    animation: ballBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
+  .ball:nth-child(1) { animation-delay: 1.0s; }
+  .ball:nth-child(2) { animation-delay: 1.12s; }
+  .ball:nth-child(3) { animation-delay: 1.24s; }
+  .ball:nth-child(4) { animation-delay: 1.36s; }
+  .ball:nth-child(5) { animation-delay: 1.48s; }
 
   .ball.white {
     background: radial-gradient(circle at 35% 35%, #fff 0%, #e2eaf2 70%, #c8d6e4 100%);
     color: #00538B;
     box-shadow: 0 6px 18px rgba(0,0,0,0.25), inset 0 -4px 8px rgba(0,40,80,0.1), inset 0 3px 6px rgba(255,255,255,0.8);
   }
-
   .ball.gold {
     background: radial-gradient(circle at 35% 35%, #ffeaa7 0%, #f0c040 60%, #d4a020 100%);
     color: #6a4500;
@@ -222,7 +311,14 @@
     pointer-events: none;
   }
 
-  .amount-section { text-align: center; margin: 20px 0; position: relative; z-index: 2; }
+  /* Amount with shimmer */
+  .amount-section {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .amount-section.anim-item { animation-delay: 1.6s; }
 
   .amount-box {
     display: inline-block;
@@ -244,9 +340,21 @@
     font-family: 'Playfair Display', serif;
     font-weight: 800;
     font-size: 64px;
-    color: #f0c040;
     line-height: 1;
-    text-shadow: 0 3px 16px rgba(240,192,64,0.35);
+    /* Gold shimmer text */
+    background: linear-gradient(
+      90deg,
+      #f0c040 0%,
+      #f0c040 35%,
+      #fff8dc 50%,
+      #f0c040 65%,
+      #f0c040 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease-in-out 2.2s infinite;
   }
   .amount-box .big-number .s { font-size: 36px; vertical-align: top; margin-right: 2px; font-weight: 700; }
   .amount-box .big-number .d { font-size: 28px; vertical-align: top; font-weight: 400; }
@@ -260,6 +368,7 @@
     margin-top: 6px;
   }
 
+  /* Details */
   .details-row {
     display: flex;
     justify-content: center;
@@ -269,6 +378,8 @@
     z-index: 2;
     flex-wrap: wrap;
   }
+  .details-row.anim-item { animation-delay: 1.8s; }
+
   .detail { text-align: center; }
   .detail .dt {
     font-family: 'Montserrat', sans-serif;
@@ -286,6 +397,7 @@
     color: rgba(255,255,255,0.85);
   }
 
+  /* Gift message - personalised */
   .gift-message {
     text-align: center;
     margin: 10px 0;
@@ -295,29 +407,38 @@
     position: relative;
     z-index: 2;
   }
+  .gift-message.anim-item { animation-delay: 1.95s; }
+
   .gift-message .to-from {
     font-family: 'Great Vibes', cursive;
-    font-size: 18px;
-    color: rgba(255,255,255,0.55);
-    margin-bottom: 4px;
+    font-size: 22px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 6px;
+    line-height: 1.6;
   }
-  .gift-message .blank-line {
-    display: inline-block;
-    width: 100px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    margin: 0 6px;
-    vertical-align: baseline;
+
+  .gift-message .to-from .name {
+    color: rgba(255,255,255,0.85);
   }
+
   .gift-message .msg {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 15px;
     font-style: italic;
     color: rgba(255,255,255,0.45);
     margin-top: 8px;
   }
 
-  .footer-bits { text-align: center; margin-top: 12px; position: relative; z-index: 2; }
+  /* Footer */
+  .footer-bits {
+    text-align: center;
+    margin-top: 12px;
+    position: relative;
+    z-index: 2;
+  }
+  .footer-bits.anim-item { animation-delay: 2.2s; }
+
   .footer-bits p {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
@@ -328,6 +449,7 @@
   }
 
   .serial { text-align: center; margin-top: 8px; position: relative; z-index: 2; }
+  .serial.anim-item { animation-delay: 2.3s; }
   .serial span {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
@@ -338,14 +460,13 @@
 
   .sc-accent {
     position: absolute;
-    bottom: 50px;
-    right: 50px;
+    bottom: 50px; right: 50px;
     opacity: 0.06;
     pointer-events: none;
     z-index: 1;
   }
 
-  /* ============ MOBILE — under 520px ============ */
+  /* ============ MOBILE ============ */
   @media (max-width: 520px) {
     body { padding: 10px 6px; }
     .ticket-outer { border-radius: 14px; padding: 3px; }
@@ -375,8 +496,7 @@
     .detail .dt { font-size: 7px; letter-spacing: 2px; }
     .detail .dd { font-size: 12px; }
     .gift-message { padding: 10px 6px; }
-    .gift-message .to-from { font-size: 16px; }
-    .gift-message .blank-line { width: 70px; margin: 0 4px; }
+    .gift-message .to-from { font-size: 18px; }
     .gift-message .msg { font-size: 12px; }
     .footer-bits p { font-size: 7px; letter-spacing: 1px; }
     .serial span { font-size: 7px; letter-spacing: 2px; }
@@ -385,7 +505,6 @@
     .fancy-rule { margin: 10px 0; }
   }
 
-  /* ============ TINY — under 360px ============ */
   @media (max-width: 360px) {
     .ticket-inner { padding: 18px 14px 14px; }
     .princess-text { font-size: 18px; letter-spacing: 4px; }
@@ -399,12 +518,14 @@
     .amount-box .big-number .s { font-size: 22px; }
     .amount-box .big-number .d { font-size: 16px; }
     .details-row { gap: 16px; }
-    .gift-message .to-from { font-size: 14px; }
-    .gift-message .blank-line { width: 55px; }
+    .gift-message .to-from { font-size: 16px; }
   }
 </style>
 </head>
 <body>
+
+<!-- Confetti container -->
+<div id="confetti"></div>
 
 <div class="page">
   <div class="voucher">
@@ -456,7 +577,8 @@
           <circle cx="32" cy="48" r="1.5" fill="#fff"/>
         </svg>
 
-        <div class="header">
+        <!-- Header -->
+        <div class="header anim-item">
           <div class="sea-witch-icon">
             <svg width="50" height="36" viewBox="0 0 50 36">
               <ellipse cx="25" cy="5" rx="3.5" ry="4.5" fill="rgba(255,255,255,0.75)"/>
@@ -473,13 +595,13 @@
           <div class="aus-season">Come Back New</div>
         </div>
 
-        <div class="fancy-rule">
+        <div class="fancy-rule anim-item rule-1">
           <div class="line"></div>
           <div class="anchor">⚓</div>
           <div class="line"></div>
         </div>
 
-        <div class="gift-label">
+        <div class="gift-label anim-item">
           <span class="pre">You're going to play</span>
           <h1>Bingo!</h1>
         </div>
@@ -492,7 +614,7 @@
           <div class="ball white"><span class="stripe"></span>O</div>
         </div>
 
-        <div class="amount-section">
+        <div class="amount-section anim-item">
           <div class="amount-box">
             <div class="top-label">Gift Value</div>
             <div class="big-number">
@@ -502,7 +624,7 @@
           </div>
         </div>
 
-        <div class="details-row">
+        <div class="details-row anim-item">
           <div class="detail">
             <div class="dt">Ship</div>
             <div class="dd">Crown Princess</div>
@@ -517,25 +639,24 @@
           </div>
         </div>
 
-        <div class="gift-message">
+        <div class="gift-message anim-item">
           <div class="to-from">
-            To: <span class="blank-line"></span> From: <span class="blank-line"></span>
+            To <span class="name">Mum</span> &nbsp;with love from&nbsp; <span class="name">Matt &amp; Kristen</span>
           </div>
-          <div class="msg">Wishing you big wins and even bigger laughs on the high seas!</div>
         </div>
 
-        <div class="fancy-rule">
+        <div class="fancy-rule anim-item rule-2">
           <div class="line"></div>
           <div class="anchor">✦</div>
           <div class="line"></div>
         </div>
 
-        <div class="footer-bits">
+        <div class="footer-bits anim-item">
           <p>This is a novelty gift voucher for onboard bingo fun aboard Crown Princess.<br>
           Good vibes only. No actual terms and conditions — just good luck!</p>
         </div>
 
-        <div class="serial">
+        <div class="serial anim-item">
           <span>GIFT-CP-AU-2026-BINGO-🎉</span>
         </div>
 
@@ -543,6 +664,35 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Confetti burst when the bingo balls finish bouncing
+  setTimeout(() => {
+    const container = document.getElementById('confetti');
+    const colors = ['#00538B', '#f0c040', '#fff', '#e2eaf2', '#d4a020', '#ffeaa7', '#004475'];
+    const count = 40;
+
+    for (let i = 0; i < count; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.width = (Math.random() * 8 + 4) + 'px';
+      piece.style.height = (Math.random() * 10 + 6) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.opacity = '1';
+
+      const duration = Math.random() * 2 + 2;
+      const delay = Math.random() * 0.5;
+      piece.style.animation = `confettiFall ${duration}s ease-in ${delay}s forwards`;
+
+      container.appendChild(piece);
+    }
+
+    // Clean up confetti after animations
+    setTimeout(() => { container.innerHTML = ''; }, 5000);
+  }, 1500);
+</script>
 
 </body>
 </html>
